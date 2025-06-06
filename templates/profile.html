@@ -1,0 +1,41 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div style="display: flex; justify-content: center; align-items: center; padding: 3rem 1rem;">
+        <div style="display: flex; gap: 2.5rem; background: #f4f4f4; padding: 2rem; border-radius: 12px; max-width: 900px; width: 100%; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);">
+
+            <div>
+                {% if user.profile_picture %}
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <img src="{{ user.profile_picture.url }}" alt="Profile Picture"
+                             style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                    </div>
+                {% endif %}
+            </div>
+
+            <div style="flex: 1;">
+                <h2 style="margin-bottom: 1rem; font-size: 1.8rem;">{{ user.first_name }} {{ user.last_name }}</h2>
+                <p><strong>Middle Name:</strong> {{ user.middle_name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Gender:</strong> {{ user.get_gender_display }}</p>
+                <p><strong>Birth Date:</strong> {{ user.birth_date }}</p>
+                <p><strong>Role:</strong> {{ user.get_role_display }}</p>
+
+                {% if user.role == "student" %}
+                    <p><strong>Grade:</strong> {{ user.student.grade }}</p>
+                {% elif user.role == "teacher" %}
+                    <p><strong>Subject:</strong> {{ user.teacher.subject }}</p>
+                    <p><strong>Work Experience:</strong> {{ user.teacher.work_experience }} year(s)</p>
+                {% endif %}
+
+                <a href="{% url 'edit_profile' %}">
+                    <button style="background-color: #3762f0; color: white; border: none; padding: 10px 25px; font-size: 1rem; border-radius: 8px; cursor: pointer;">
+                        Edit Profile
+                    </button>
+                </a>
+            </div>
+
+        </div>
+    </div><br><br><br><br><br><br>
+{% endblock %}

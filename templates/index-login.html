@@ -1,0 +1,122 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+
+    <section class="hero-area bg-img bg-overlay-2by5" style="background-image: url({% static 'img/bg-img/bg1.jpg' %});">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <div class="hero-content text-center">
+                        <h2>Let's Study Together</h2>
+                        <a href="" class="btn clever-btn">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="cool-facts-area section-padding-100-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="single-cool-facts-area text-center mb-100">
+                        <div class="icon">
+                            <img src="{% static 'img/core-img/docs.png' %}" alt="">
+                        </div>
+                        <h2><span class="counter">1300</span></h2>
+                        <h5>Dedicated Students</h5>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="single-cool-facts-area text-center mb-100">
+                        <div class="icon">
+                            <img src="{% static 'img/core-img/star.png' %}" alt="">
+                        </div>
+                        <h2><span class="counter">120</span></h2>
+                        <h5>Dedicated Tutors</h5>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="single-cool-facts-area text-center mb-100">
+                        <div class="icon">
+                            <img src="{% static 'img/core-img/events.png' %}" alt="">
+                        </div>
+                        <h2><span class="counter">389</span></h2>
+                        <h5>Scheduled Events</h5>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="single-cool-facts-area text-center mb-100">
+                        <div class="icon">
+                            <img src="{% static 'img/core-img/earth.png' %}" alt="">
+                        </div>
+                        <h2><span class="counter">56</span></h2>
+                        <h5>Invited Guests</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="best-tutors-area section-padding-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>The Best Tutors in Town</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for teacher in teachers %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="single-instructor d-flex align-items-center mb-30">
+                            <div class="instructor-thumb">
+                                <img style="width: 80px; height: 80px; border-radius: 10%; object-fit: cover;"
+                                     src="{{ teacher.user.profile_picture.url }}" alt="Teacher Photo">
+                            </div>
+                            <div class="instructor-info">
+                                <h5>{{ teacher.user.first_name }} {{ teacher.user.last_name }}</h5>
+                                <span>{{ teacher.subject }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="blog-area section-padding-100-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>From Our Blog</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for post in posts %}
+                    <div class="col-12 col-md-6">
+                        <div class="single-blog-area mb-100">
+                            <img style="width: 540px; height: 300px" src="{{ post.image.url }}" alt="">
+                            <div class="blog-content">
+                                <a href="{% url 'blog' post.pk %}" class="blog-headline">
+                                    <h4>{{ post.title|truncatechars:30 }}</h4>
+                                </a>
+                                <div class="meta d-flex align-items-center">
+                                    <a href="#">{{ post.category }}</a>
+                                </div>
+                                <p>{{ post.description|truncatechars:100 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="breadcumb-area">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'blog_list' %}">Blog</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ post.category }}</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="clever-catagory blog-details bg-img d-flex align-items-center justify-content-center p-3 height-400"
+         style="background-image: url({{ post.image.url }});">
+        <div class="blog-details-headline">
+            <h3>{{ post.title }}</h3>
+            <div class="meta d-flex align-items-center justify-content-center">
+                <a href="#">{{ post.category }}</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="blog-details-content section-padding-100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-8">
+                    <div class="blog-details-text">
+                        <p>{{ post.description }}</p>
+                        <div class="post-tags">
+                            <ul>
+                                {% for tag in post.tags.all %}
+                                    <li><a href="#">{{ tag.name }}</a></li>
+                                {% empty %}
+                                    <span>No tags</span>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br><br>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-6">
+                    <div class="post-a-comments mb-70">
+                        <h4>Post a Comment</h4>
+
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <div class="form-group">
+                                        {{ comment_form.name.label_tag }}
+                                        {{ comment_form.name }}
+                                        {{ comment_form.name.errors }}
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        {{ comment_form.message.label_tag }}
+                                        {{ comment_form.message }}
+                                        {{ comment_form.message.errors }}
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <button type="submit" class="btn clever-btn w-100">Post A Comment</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-6">
+                    <div class="comments-area">
+                        <h4>Comments ({{ comment_count }})</h4>
+
+                        <ol class="comments-list">
+                            {% for comment in comments %}
+                                <li class="single_comment_area mb-30">
+                                    <div class="single-comment-wrap">
+                                        <div class="d-flex justify-content-between mb-30">
+                                            <div class="comment-admin d-flex">
+                                                <div class="thumb">
+                                                    <img style="width: 40px; height: 40px"
+                                                         src="{{ user.profile_picture.url }}" alt="">
+                                                </div>
+                                                <div class="text">
+                                                    <h6>{{ comment.name }}</h6>
+                                                    <span>{{ comment.created_at }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p>{{ comment.message }}</p>
+                                    </div>
+                                </li>
+                            {% empty %}
+                                <li>No comments yet.</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="related-posts section-padding-100-0">
+            <div class="container-fluid">
+                <div class="row">
+                    {% for related in related_posts %}
+                        <div class="col-12 col-lg-6">
+                            <div class="single-blog-area mb-100">
+                                <img style="height: 370px" src="{{ related.image.url }}" alt="{{ related.title }}">
+                                <div class="blog-content">
+                                    <a href="{% url 'blog' related.pk %}" class="blog-headline">
+                                        <h4>{{ related.title }}</h4>
+                                    </a>
+                                    <div class="meta d-flex align-items-center">
+                                        <a href="#">{{ related.category.name }}</a>
+                                    </div>
+                                    <p>{{ related.description|truncatechars:100 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

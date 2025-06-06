@@ -1,0 +1,75 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+    <div style="max-width: 600px; margin: 2rem auto; padding: 2rem; background-color: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+        <h2 style="text-align: center; color: #252525; margin-bottom: 1.5rem; font-weight: 600;">Edit Profile</h2>
+
+        <form method="POST" enctype="multipart/form-data" style="color: #252525;">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div style="margin-bottom: 1.25rem;">
+                    <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #252525;">{{ field.label }}</label>
+
+                    {% if field.field.widget.input_type == 'select' %}
+                        <select name="{{ field.name }}" id="{{ field.id_for_label }}"
+                                style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #ddd; background-color: white; color: #252525;">
+                            {% for choice in field.field.choices %}
+                                <option value="{{ choice.0 }}" {% if choice.0 == field.value %}selected{% endif %}>{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <input type="{{ field.field.widget.input_type }}"
+                               name="{{ field.name }}"
+                               id="{{ field.id_for_label }}"
+                               value="{{ field.value|default:'' }}"
+                               style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #ddd; background-color: white; color: #252525;">
+                    {% endif %}
+
+                    {% if field.help_text %}
+                        <small style="color: #666; font-size: 0.8rem; display: block; margin-top: 0.25rem;">{{ field.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <div style="color: #e74c3c; font-size: 0.8rem; margin-top: 0.25rem;">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="submit"
+                        style="background-color: #3762f0; color: white; border: none; padding: 0.75rem 2rem; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background-color 0.2s; width: 100%; max-width: 200px;">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const genderSelect = document.querySelector('select[name="gender"]');
+            if (genderSelect) {
+                genderSelect.addEventListener("change", function () {
+                    const placeholderOption = genderSelect.querySelector('option[value="1"]');
+                    if (this.value !== "1") {
+                        placeholderOption.disabled = true;
+                    }
+                });
+            }
+
+            // Add focus styles for better UX
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = '#3762f0';
+                    this.style.outline = 'none';
+                    this.style.boxShadow = '0 0 0 2px rgba(55, 98, 240, 0.2)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = '#ddd';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
+{% endblock %}

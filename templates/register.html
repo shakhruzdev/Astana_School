@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            margin: 10px 0 5px;
+            display: block;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"],
+        input[type="file"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Register</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="error">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="role">Select Role:</label>
+        <select id="role" name="role" onchange="toggleTeacherFields()">
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+        </select>
+
+        <div id="teacher_code_div" class="hidden">
+            <label for="teacher_code">Teacher Code:</label>
+            <input type="password" name="teacher_code" placeholder="Enter teacher code">
+        </div>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" placeholder="Enter your email" required>
+
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" placeholder="Enter your first name" required>
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" placeholder="Enter your last name" required>
+
+        <label for="middle_name">Middle Name:</label>
+        <input type="text" name="middle_name" placeholder="Enter your middle name" required>
+
+        <label for="gender">Gender:</label>
+        <select name="gender" required>
+            <option value="1">---</option>
+            <option value="2">MALE</option>
+            <option value="3">FEMALE</option>
+        </select>
+
+        <label for="birth_date">Birth Date:</label>
+        <input type="date" name="birth_date" required>
+
+        <label for="profile_picture">Profile Picture:</label>
+        <input type="file" name="profile_picture">
+
+        <div id="student_fields">
+            <label for="grade">Grade:</label>
+            <input type="text" name="grade" placeholder="Enter your grade">
+        </div>
+
+        <div id="teacher_fields" class="hidden">
+            <label for="subject">Subject:</label>
+            <input type="text" name="subject" placeholder="Enter your subject">
+
+            <label for="work_experience">Work Experience (years):</label>
+            <input type="number" name="work_experience" min="0" placeholder="Years of experience">
+        </div>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" placeholder="Create your password" required>
+
+        <label for="password_confirmation">Confirm Password:</label>
+        <input type="password" name="password_confirmation" placeholder="Confirm your password" required>
+
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+<script>
+    function toggleTeacherFields() {
+        const role = document.getElementById("role").value;
+        const teacherCodeDiv = document.getElementById("teacher_code_div");
+        const teacherFields = document.getElementById("teacher_fields");
+        const studentFields = document.getElementById("student_fields");
+
+        if (role === "teacher") {
+            teacherCodeDiv.classList.remove("hidden");
+            teacherFields.classList.remove("hidden");
+            studentFields.classList.add("hidden");
+        } else {
+            teacherCodeDiv.classList.add("hidden");
+            teacherFields.classList.add("hidden");
+            studentFields.classList.remove("hidden");
+        }
+    }
+</script>
+
+</body>
+</html>

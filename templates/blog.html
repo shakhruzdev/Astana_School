@@ -1,0 +1,112 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+    <section class="blog-area blog-page section-padding-100">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="blog-catagories mb-70 d-flex flex-wrap justify-content-between">
+                        {% for category in categories %}
+                            <div class="single-catagories bg-img">
+                                    <h6>{{ category.name }}</h6>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for post in posts %}
+                    <div class="col-12 col-lg-6">
+                        <div class="single-blog-area mb-100 wow fadeInUp" data-wow-delay="250ms">
+                            <img style="width: 800px; height: 370px" src="{{ post.image.url }}" alt="">
+                            <div class="blog-content">
+                                <a href="{% url 'blog' post.pk %}" class="blog-headline">
+                                    <h4>{{ post.title }}</h4>
+                                </a>
+                                <div class="meta d-flex align-items-center">
+                                    <a href="#">{{ post.category }}</a>
+                                </div>
+                                <p>{{ post.description|truncatechars:100 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <nav class="d-flex justify-content-center mt-5">
+                        <ul class="pagination">
+                            {% if posts.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">&laquo; First</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ posts.previous_page_number }}">‹ Prev</a>
+                                </li>
+                            {% endif %}
+
+                            {% for num in posts.paginator.page_range %}
+                                {% if posts.number == num %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% elif num > posts.number|add:'-3' and num < posts.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if posts.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ posts.next_page_number }}">Next ›</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ posts.paginator.num_pages }}">Last &raquo;</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <style>
+        .pagination {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding-left: 0;
+        }
+
+        .pagination .page-item {
+            margin: 0 5px;
+        }
+
+        .pagination .page-link {
+            color: #333;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 8px 14px;
+            border-radius: 4px;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #3762f0;
+            color: white;
+        }
+
+        .pagination .active .page-link {
+            background-color: #3762f0;
+            border-color: #3762f0;
+            color: white;
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+    <style>
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            display: none;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
+        .video-wrapper .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .video-wrapper .play-button:hover {
+            background-color: rgba(255, 0, 0, 0.7);
+        }
+
+
+        .video-bg-image {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
+        .video-wrapper h2 {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            color: white;
+            z-index: 5;
+            font-size: 32px;
+            font-weight: bold;
+            text-shadow: 2px 2px 8px #000;
+        }
+
+        .instructors-video {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 600px;
+            padding: 60px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 90%;
+        }
+    </style>
+    <div class="breadcumb-area">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Teachers</li>
+            </ol>
+        </nav>
+    </div>
+    <div style="background: white" class="instructors-video d-flex align-items-center justify-content-center py-5">
+        <div class="video-wrapper">
+            <h2>Be The Best Teacher</h2>
+
+            <img src="{% static 'img/bg-img/bg4.jpg' %}" alt="Video Background" class="video-bg-image"
+                 id="videoPreview">
+
+            <div class="play-button" onclick="playVideo()">
+                <i class="fa fa-play"></i>
+            </div>
+
+            <video id="myVideo" controls>
+                <source src="{% static 'video/video.mp4' %}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div><br><br><br><br>
+    <section class="top-teacher-area section-padding-0-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Top Teachers in Every Field</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for teacher in teachers.object_list %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="single-instructor d-flex align-items-center mb-30">
+                            <div class="instructor-thumb">
+                                <img style="width: 80px; height: 80px; border-radius: 10%"
+                                     src="{{ teacher.user.profile_picture.url }}" alt="">
+                            </div>
+                            <div class="instructor-info">
+                                <h5>{{ teacher.user.first_name }} {{ teacher.user.last_name }}</h5>
+                                <span>{{ teacher.subject }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if teachers.has_other_pages %}
+                <div class="row">
+                    <div class="col-12">
+                        <nav class="d-flex justify-content-center mt-4">
+                            <ul class="pagination">
+                                {% if teachers.has_previous %}
+                                    <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?page={{ teachers.previous_page_number }}">‹ Prev</a>
+                                    </li>
+                                {% endif %}
+
+                                {% for num in teachers.paginator.page_range %}
+                                    {% if teachers.number == num %}
+                                        <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                                    {% elif num > teachers.number|add:'-3' and num < teachers.number|add:'3' %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if teachers.has_next %}
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?page={{ teachers.next_page_number }}">Next ›</a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?page={{ teachers.paginator.num_pages }}">Last
+                                        &raquo;</a></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <style>
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .pagination .page-link {
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            margin: 0 3px;
+            border-radius: 4px;
+            transition: all 0.3s ease-in-out;
+            text-decoration: none;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #3762f0;
+            color: #fff;
+        }
+
+        .pagination .active .page-link {
+            background-color: #3762f0;
+            color: #fff;
+            border-color: #3762f0;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #ccc;
+            pointer-events: none;
+            background-color: #f8f9fa;
+            border-color: #ddd;
+        }
+    </style>
+    <script>
+        function playVideo() {
+            const video = document.getElementById('myVideo');
+            const preview = document.getElementById('videoPreview');
+            const playBtn = document.querySelector('.play-button');
+
+            preview.style.display = 'none';
+            playBtn.style.display = 'none';
+            video.style.display = 'block';
+            video.play();
+        }
+    </script>
+{% endblock %}

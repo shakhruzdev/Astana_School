@@ -1,0 +1,140 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+    <br><h2 style="text-align: center">Room: {{ room_name }}</h2>
+    <div class="chat-container">
+        <div id="chat-log"></div>
+        <div class="chat-input-container">
+            <input id="chat-message-input" type="text" placeholder="Type your message here..."/>
+            <button style="" id="chat-message-submit">Send</button>
+        </div>
+    </div><br><br><br>
+
+    <script>
+        const roomName = "{{ room_name }}";
+        const chatSocket = new WebSocket(
+            `ws://${window.location.host}/ws/chat/${roomName}/`
+        );
+
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            const user = data.user ?? "Anonymous";
+            const time = data.sent_time ?? "";
+            document.querySelector('#chat-log').innerHTML += `<p><b>${user}</b> <small style="color: gray">(${time})</small>: ${data.message}</p>`;
+            document.querySelector('#chat-log').scrollTop = document.querySelector('#chat-log').scrollHeight;
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function () {
+            const messageInput = document.querySelector('#chat-message-input');
+            const message = messageInput.value.trim();
+            if (message.length > 0) {
+                chatSocket.send(JSON.stringify({'message': message}));
+                messageInput.value = '';
+            }
+        };
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'sent_time': new Date().toLocaleTimeString(),
+        }));
+    </script>
+    <style>
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #chat-message-input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+        }
+
+        #chat-message-submit {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-left: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 4px 4px 0;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            flex-direction: column;
+        }
+
+        #chat-message-submit:hover {
+            background-color: #0056b3;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        #chat-log {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #chat-log p {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+
+        #chat-message-input {
+            width: 70%;
+            max-width: 400px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        #chat-message-submit {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #chat-message-submit:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 600px) {
+            #chat-message-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            #chat-message-submit {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+{% endblock %}
