@@ -99,6 +99,8 @@ def profile_view(request):
 
 
 def home_view(request):
+    if not request.user.is_authenticated:
+        return redirect("register")
     posts = Post.objects.order_by("?")[:2]
     teachers = Teacher.objects.order_by("?")[:3]
 
